@@ -14,7 +14,7 @@ public:
 	void mousePressed(int x, int y, int button);
 
 	void mouseReleased(int x, int y, int button);
-		
+
 	ofxPanel gui;
 
 	ofParameter<bool> drawGrid;
@@ -57,6 +57,6 @@ private:
 	void analogPinChanged(const int& pinNum);
 
 	float rotateX;
-    float rotateY;
-    float rotateZ;
+	float rotateY;
+	float rotateZ;
 };

@@ -11,10 +11,10 @@
 
 #define PIN_LDR 0
 
-void ofApp::setup() 
+void ofApp::setup()
 {
 	ofSetFrameRate(60);
-	
+
 
 	gui.setup();
 	gui.add(drawGrid.set("Grid", false));
@@ -35,9 +35,9 @@ void ofApp::setup()
 	arduino.connect("COM3", 57600);
 	arduino.sendFirmwareVersionRequest(); // workaround for ofArduino/firmata bug
 
-	Width = 150;
-	Height = 150;
-	Length = 150;
+	Width = 200;
+	Height = 200;
+	Length = 200;
 
 	x = ofRandom(-100, Width);
 	y = ofRandom(-100, Height);
@@ -71,7 +71,7 @@ void ofApp::setupArduino(const int& version) {
 	ofAddListener(arduino.EAnalogPinChanged, this, &ofApp::analogPinChanged);
 }
 
-void ofApp::update() 
+void ofApp::update()
 {
 	if (arduino.getAnalog(1) < 200)
 	{
@@ -95,23 +95,23 @@ void ofApp::update()
 
 	//cout << AnalogValue << endl;
 
-	
 
-	if (rotateY > 90 && rotateY <180)
+
+	if (rotateY > 90 && rotateY < 180)
 	{
 		arduino.sendDigital(PIN_LED, ARD_LOW);
 		arduino.sendDigital(PIN_LED2, ARD_HIGH);
 		arduino.sendDigital(PIN_LED3, ARD_LOW);
 		arduino.sendDigital(PIN_LED4, ARD_LOW);
-	} 
-	else if (rotateY > 180 && rotateY <270)
+	}
+	else if (rotateY > 180 && rotateY < 270)
 	{
 		arduino.sendDigital(PIN_LED, ARD_LOW);
 		arduino.sendDigital(PIN_LED2, ARD_LOW);
 		arduino.sendDigital(PIN_LED3, ARD_HIGH);
 		arduino.sendDigital(PIN_LED4, ARD_LOW);
 	}
-	else if (rotateY > 270 && rotateY <360)
+	else if (rotateY > 270 && rotateY < 360)
 	{
 		arduino.sendDigital(PIN_LED, ARD_LOW);
 		arduino.sendDigital(PIN_LED2, ARD_LOW);
@@ -129,12 +129,12 @@ void ofApp::update()
 
 	arduino.update();
 	//ofLog() << "isArduinoReady" << arduino.isArduinoReady() << endl;
-	
 
-	if (x < -150)
+
+	if (x < -200)
 	{
 		//cout << "links" << endl;
-		x = -150;
+		x = -200;
 		speedX = -speedX;
 	}
 
@@ -147,10 +147,10 @@ void ofApp::update()
 	}
 	////////////////////
 
-	if (y < -150)
+	if (y < -200)
 	{
 		//cout << "boven" << endl;
-		y = -150;
+		y = -200;
 		speedY = -speedY;
 	}
 
@@ -162,9 +162,9 @@ void ofApp::update()
 	}
 	/////////////////
 
-	if (z < -150)
+	if (z < -200)
 	{
-		z = -150;
+		z = -200;
 		speedZ = -speedZ;
 	}
 
@@ -181,33 +181,37 @@ void ofApp::update()
 
 }
 
-void ofApp::draw() 
+void ofApp::draw()
 {
+	ofDisableDepthTest();
 
 	gui.draw();
 
 	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
 
-	ofEnableDepthTest();
+	cam.begin();
+	cam.setVFlip(true);
 
-	
-
-	//cam.setVFlip(true);
-	//cam.begin();
-
-	if (useLight) 
+	if (useLight)
 	{
 		ofEnableLighting();
 	}
-	else 
+	else
 	{
 		ofDisableLighting();
 	}
 
-	if (drawGui) 
+	if (doRotate)
 	{
-		ofDisableLighting();
+		ofRotateYDeg(rotateY);
 	}
+
+	if (drawGrid)
+	{
+		ofDrawGrid(200);
+	}
+
+	ofEnableDepthTest();
 
 	////////////////
 
@@ -215,29 +219,13 @@ void ofApp::draw()
 	ofSetColor(color);
 	ofDrawSphere(x, y, z, radius);
 
-
-	/////////////////
-
-
-	
-
-	if (doRotate)
-	{
-		//ofRotateXDeg(rotateX);
-		ofRotateYDeg(rotateY);
-		//ofRotateZDeg(rotateZ);
-	}
-
-	if (drawGrid) 
-	{
-		ofDrawGrid(200);
-	}
-
 	ofSetColor(ofColor::yellow);
 	ofDrawSphere(0, 0, 0, 100);
 
 	ofSetColor(ofColor::blue);
 	ofDrawSphere(200, 0, 0, 50);
+
+	/////////////////
 }
 
 
@@ -251,7 +239,7 @@ void ofApp::digitalPinChanged(const int& pinNum)
 	ofLogNotice() << "Digital Pin " << pinNum << " value: " << arduino.getDigital(pinNum) << endl;
 }
 
-void ofApp::analogPinChanged(const int& pinNum) 
+void ofApp::analogPinChanged(const int& pinNum)
 {
 	// get value with arduino.getAnalog(pinNum));
 	//arduino.getAnalog(pinNum);
@@ -259,20 +247,20 @@ void ofApp::analogPinChanged(const int& pinNum)
 }
 
 
-void ofApp::mousePressed(int x, int y, int button) 
+void ofApp::mousePressed(int x, int y, int button)
 {
 	// switch the LED on
 	//doRotate = !doRotate;
-	
-	//useLight = !useLight;
+
+	//useLight = useLight;
 	//drawGrid = !drawGrid;
 
 	cout << "aan" << endl;
 }
 
-void ofApp::mouseReleased(int x, int y, int button) 
+void ofApp::mouseReleased(int x, int y, int button)
 {
 	// switch the LED off
+
 	cout << "uit" << endl;
 }
-
